@@ -1,21 +1,14 @@
 <template>
   <div>
-    <h1>Каталог товаров</h1>
-    <Home />
+    <NuxtLayout>
+      <NuxtPage />
+    </NuxtLayout>
   </div>
 </template>
 
 <script setup lang="ts">
 import { onMounted } from 'vue';
 import { useCatalogStore } from '@/stores/catalogStore';
-import Home from '@/components/Home.vue'; 
-
-// Инициализируем хранилище каталога
-const catalogStore = useCatalogStore();
-
-onMounted(() => {
-  catalogStore.loadCatalog(); // Загружаем данные каталога при монтировании компонента
-});
 </script>
 
 <style>

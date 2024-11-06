@@ -7,22 +7,24 @@ export const useCatalogStore = defineStore('catalog', {
   }),
   actions: {
     setCatalog(data: any) {
+      console.log("Set catalog", data)
       this.catalog = data; // Устанавливаем данные каталога
     },
     setLocale(locale: string) {
       this.locale = locale; // Устанавливаем язык
+      console.log (locale, "SetLocale")
     },
     async loadCatalog() {
       try {
-        const response = await fetch('data/task_json.txt');
+        const response = await fetch('data/task_json.json');
         console.log('Фетчится', response)
         if (!response.ok) {
           throw new Error('Network response was not ok');
         }
-        const data = await response.json(); // Парсим данные в формате JSON
-        this.setCatalog(data); // Устанавливаем данные в состояние
+        const data = await response.json(); 
+        this.setCatalog(data);
       } catch (error) {
-        console.error('Error loading catalog:', error); // Логируем ошибку в консоль
+        console.error('Error loading catalog:', error);
       }
     },
   },
