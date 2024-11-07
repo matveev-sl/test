@@ -18,16 +18,14 @@ import { useCatalogStore } from '@/stores/catalogStore';
 import Product from './Product.vue';
 import LocaleSwitcher from './LocaleSwitcher.vue';
 
-// Получаем доступ к хранилищу каталога
 const catalogStore = useCatalogStore();
 const catalog = computed(() => catalogStore.catalog); 
+
 
 console.log("Загрузка каталога из пиньи", catalog)
 
 const locale = computed(() => catalogStore.locale); // Текущий язык из Pinia
 
-
-// Загружаем данные каталога при монтировании компонента
 onMounted(() => {
   catalogStore.loadCatalog();
 });

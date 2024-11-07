@@ -1,10 +1,10 @@
 <template>
      <div>
-        <p>{{ breadcrumbs(product) }}</p>
+        <p>Крошки: {{ breadcrumbs}} </p>
      
-        <h3>{{ product.locale[locale].cg_name ?? "Неизвестно" }}</h3>
+        <h3>{{ product.locale[locale].cg_name ?? "Unknown" }}</h3>
         <p>ID : {{ product.id }}</p>
-        <p>Крошки: {{ breadcrumbs(product)}} </p>
+       
         <a :href="product.locale[locale].link">{{ product.locale[locale].link }}</a>
         <button 
   v-if="hasChildren" 
@@ -41,17 +41,28 @@ const props = defineProps({
   }
 });
 
-const breadcrumbs = (item) => {
-  if (!item?.path_to_top || item.path_to_top.length === 0) {
-    return item.locale[locale.value]?.cg_name;
-  }
-  const levels = Object.values(item.path_to_top)
+function getBreadcrumbs(catalog, pathIds, locale) {
+  const breadcrumbs = [];
+  let currentLevel = catalog;
 
-  console.log ('Ищем крошки', levels)
-  const currentName = item.locale[locale.value]?.cg_name ?? "Unknown";
-  
-  return `${levels.join(' -> ')} -> ${currentName}`;
-};
+  for (let i = pathIds.length - 1; i >= 0; i--) {
+    const id = pathIds[i];
+    const item = currentLevel.find((el) => el.id === id);
+
+    if (item) {
+      breadcrumbs.push(item.locale[locale]?.cg_name || "Unknown");
+      currentLevel = item.childs || []; 
+    } else {
+      break;
+    }
+  }
+
+  return breadcrumbs.reverse().join(" -> ");
+}
+
+const breadcrumbs = computed(() => {
+  return getBreadcrumbs(catalogStore.catalog, props.product.path_to_top, locale.value);
+});
 const hasChildren = computed(() => props.product.childs);
 const toggleVisibility = () => {
   isVisible.value = !isVisible.value;
