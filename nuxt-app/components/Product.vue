@@ -59,7 +59,22 @@ function getBreadcrumbs(catalog, pathIds, locale) {
 
   return breadcrumbs.reverse().join(" -> ");
 }
+function getLocaleName(item, locale) {
+  // Проверка на наличие имени на текущей локали
+  if (item.locale[locale]?.cg_name) {
+    return item.locale[locale].cg_name;
+  }
 
+  // Если имя на текущей локали не найдено, ищем на первой доступной
+  for (const key in item.locale) {
+    if (item.locale[key]?.cg_name) {
+      return item.locale[key].cg_name;
+    }
+  }
+
+  // Если имя не найдено, возвращаем "Неизвестно"
+  return 'Неизвестно';
+}
 const breadcrumbs = computed(() => {
   return getBreadcrumbs(catalogStore.catalog, props.product.path_to_top, locale.value);
 });
