@@ -1,15 +1,15 @@
 import { defineStore } from 'pinia';
-
+import { Product} from "types"
 export const useCatalogStore = defineStore('catalog', {
   state: (): {
-    catalog: any[];
+    catalog: Product[];
     locale: string;
   } => ({
     catalog: [],
     locale: 'ru',
   }),
   actions: {
-    setCatalog(data: any[]): void {
+    setCatalog(data: Product[]): void {
       console.log("Set catalog", data);
       this.catalog = data;
     },
@@ -19,12 +19,12 @@ export const useCatalogStore = defineStore('catalog', {
     },
     async loadCatalog(): Promise<void> {
       try {
-        const response: Response = await fetch('data/task_json.json');
-        console.log('Фетчится', response);
+        const response: Response = await fetch('/api/catalog');
+        console.log('Ответ каталога', response);
         if (!response.ok) {
           throw new Error('Network response was not ok');
         }
-        const data: any[] = await response.json();
+        const data: Product[] = await response.json();
         this.setCatalog(data);
       } catch (error) {
         console.error('Error loading catalog:', error);

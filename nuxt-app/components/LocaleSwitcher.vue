@@ -11,14 +11,15 @@
   import { useCatalogStore } from '@/stores/catalogStore';
   
   const catalogStore = useCatalogStore();
-
+// TODO TYPESCRIPT
   const changeLocale = (event: Event) => {
-    const target = event.target as HTMLSelectElement;
-    catalogStore.setLocale(target.value); 
+    const target = event.target ;
+    if (target?.value) {
+        catalogStore.setLocale(target.value); 
+    }
   };
 
-  const locale = computed<string>(() => catalogStore.locale);
+  const locale = computed(() => catalogStore.locale);
   
-  console.log("Locale", locale);
   </script>
   

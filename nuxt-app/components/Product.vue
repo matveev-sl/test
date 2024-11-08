@@ -18,7 +18,7 @@
         {{ isVisible ? 'Скрыть' : 'Показать' }}
       </button>
       <div v-if="isVisible" v-for="child in product.childs" :key="child.id">
-        <Product :product="child" />
+        <ProductCard :product="child" />
       </div>
     </div>
   </template>
@@ -26,15 +26,15 @@
   <script setup lang="ts">
   import { computed, ref } from 'vue';
   import { useCatalogStore } from '@/stores/catalogStore';
-  import { ProductType } from '@/types';  // Предполагаем, что тип ProductType определен в types.ts
-  import Product from './Product.vue';
+  import { Product } from '@/types'; 
+  import ProductCard from './Product.vue';
   
   const catalogStore = useCatalogStore();
   const locale = computed(() => catalogStore.locale);
   const isVisible = ref(false);
   
   const props = defineProps<{
-    product: ProductType; 
+    product: Product; 
   }>();
   
   function getLocaleName(item: { locale: Record<string, { cg_name: string }> }, locale: string): string {
@@ -69,7 +69,7 @@
     return 'Anyway_unknown';
   }
   
-  function getBreadcrumbs(catalog: ProductType[], pathIds: string[], locale: string): string {
+  function getBreadcrumbs(catalog: Product[], pathIds: number[], locale: string): string {
     const breadcrumbs: string[] = [];
     let currentLevel = catalog;
   
