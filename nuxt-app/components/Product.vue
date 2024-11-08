@@ -1,10 +1,10 @@
 <template>
     <div>
       <p>Крошки: {{ breadcrumbs }} </p>
-      
+  
       <h3>{{ productName }}</h3>
       <p>ID : {{ product.id }}</p>
-      
+  
       <a :href="productLink">{{ productLink }}</a>
       <button 
         v-if="hasChildren" 
@@ -26,19 +26,18 @@
   <script setup lang="ts">
   import { computed, ref } from 'vue';
   import { useCatalogStore } from '@/stores/catalogStore';
+  import { ProductType } from '@/types';  // Предполагаем, что тип ProductType определен в types.ts
+  import Product from './Product.vue';
   
   const catalogStore = useCatalogStore();
   const locale = computed(() => catalogStore.locale);
   const isVisible = ref(false);
   
-  const props = defineProps({
-    product: {
-      type: Object,
-      required: true,
-    },
-  });
+  const props = defineProps<{
+    product: ProductType; 
+  }>();
   
-  function getLocaleName(item, locale) {
+  function getLocaleName(item: { locale: Record<string, { cg_name: string }> }, locale: string): string {
     const nameInLocale = item.locale[locale]?.cg_name;
     if (nameInLocale) {
       return nameInLocale;
@@ -53,25 +52,25 @@
   
     return 'Anyway_unknown';
   }
-
-  function getLocaleLink(item, locale) {
-  const linkInLocale = item.locale[locale]?.link;
-  if (linkInLocale) {
-    return linkInLocale;
-  }
-
-  for (const key in item.locale) {
-    const fallbackLink = item.locale[key]?.link;
-    if (fallbackLink) {
-      return fallbackLink;
+  
+  function getLocaleLink(item: { locale: Record<string, { link: string }> }, locale: string): string {
+    const linkInLocale = item.locale[locale]?.link;
+    if (linkInLocale) {
+      return linkInLocale;
     }
+  
+    for (const key in item.locale) {
+      const fallbackLink = item.locale[key]?.link;
+      if (fallbackLink) {
+        return fallbackLink;
+      }
+    }
+  
+    return 'Anyway_unknown';
   }
-
-  return 'Anyway_unknown'; 
-}
- 
-  function getBreadcrumbs(catalog, pathIds, locale) {
-    const breadcrumbs = [];
+  
+  function getBreadcrumbs(catalog: ProductType[], pathIds: string[], locale: string): string {
+    const breadcrumbs: string[] = [];
     let currentLevel = catalog;
   
     for (let i = pathIds.length - 1; i >= 0; i--) {
@@ -79,7 +78,7 @@
       const item = currentLevel.find((el) => el.id === id);
   
       if (item) {
-        breadcrumbs.push(getLocaleName(item, locale)); // Используем getLocaleName для получения имени
+        breadcrumbs.push(getLocaleName(item, locale)); 
         currentLevel = item.childs || [];
       } else {
         break;
@@ -89,7 +88,6 @@
     return breadcrumbs.reverse().join(' -> ');
   }
   
-
   const breadcrumbs = computed(() => {
     return getBreadcrumbs(catalogStore.catalog, props.product.path_to_top, locale.value);
   });
@@ -97,11 +95,13 @@
   const productName = computed(() => {
     return getLocaleName(props.product, locale.value);
   });
+  
   const productLink = computed(() => {
-  return getLocaleLink(props.product, locale.value);
-    });
-
-  const hasChildren = computed(() => props.product.childs);
+    return getLocaleLink(props.product, locale.value);
+  });
+  
+  const hasChildren = computed(() => props.product.childs && props.product.childs.length > 0);
+  
   const toggleVisibility = () => {
     isVisible.value = !isVisible.value;
   };

@@ -1,9 +1,9 @@
 <template>
   <div>
-   <LocaleSwitcher />
+    <LocaleSwitcher />
     <div v-if="catalog && catalog.length">
       <div v-for="item in catalog" :key="item.id">
-        <Product :product="item"/>
+        <Product :product="item" />
       </div>
     </div>
     <div v-else>
@@ -13,18 +13,25 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue';
+import { computed, onMounted } from 'vue';
 import { useCatalogStore } from '@/stores/catalogStore';
 import Product from './Product.vue';
 import LocaleSwitcher from './LocaleSwitcher.vue';
 
+interface ProductItem {
+  id: number;
+  name: string;
+  locale: Record<string, { cg_name: string; link: string }>;
+  childs?: ProductItem[];
+}
+
 const catalogStore = useCatalogStore();
-const catalog = computed(() => catalogStore.catalog); 
 
+const catalog = computed<ProductItem[]>(() => catalogStore.catalog);
 
-console.log("Загрузка каталога из пиньи", catalog)
+console.log("Загрузка каталога из пиньи", catalog);
 
-const locale = computed(() => catalogStore.locale); // Текущий язык из Pinia
+const locale = computed<string>(() => catalogStore.locale); 
 
 onMounted(() => {
   catalogStore.loadCatalog();
