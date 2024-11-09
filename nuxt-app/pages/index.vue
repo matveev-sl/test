@@ -7,15 +7,14 @@
 
 <script setup lang="ts">
 import { onMounted } from 'vue';
-import { useCatalogStore } from '@/stores/catalogStore';
-import Home from '@/components/Home.vue'; 
+import { useCatalogStore } from '@/src/stores/catalogStore';
+import Home from '@/src/components/Home.vue'; 
 
-// Инициализируем хранилище каталога
 const catalogStore = useCatalogStore();
 
 onMounted(() => {
-  catalogStore.loadCatalog(); // Загружаем данные каталога при монтировании компонента
-});
+  catalogStore.loadCatalog()
+  })
 </script>
 
 <style>
