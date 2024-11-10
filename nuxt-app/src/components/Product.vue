@@ -53,7 +53,7 @@ const props = defineProps<{
   product: Product; 
 }>();
 
-function getLocaleName(item: { locale: Record<string, { cg_name: string }> }, locale: string): string {
+function getLocaleName(item: Product, locale: string): string {
   const nameInLocale = item.locale[locale]?.cg_name;
   if (nameInLocale) {
     return nameInLocale;
@@ -67,7 +67,7 @@ function getLocaleName(item: { locale: Record<string, { cg_name: string }> }, lo
   return 'Anyway_unknown';
 }
 
-function getLocaleLink(item: { locale: Record<string, { link: string }> }, locale: string): string {
+function getLocaleLink(item: Product, locale: string): string {
   const linkInLocale = item.locale[locale]?.link;
   if (linkInLocale) {
     return linkInLocale;
@@ -119,3 +119,20 @@ const toggleVisibility = () => {
 <style scoped>
 
 </style>
+function isPrime(num) {
+  if (num <= 1) return false; 
+  for (let i = 2; i < num; i++) { 
+    if (num % i === 0) return false; 
+  }
+  return true; 
+}
+
+function findPrimesInRange(min, max) {
+  const primes = [];
+  for (let i = min; i <= max; i++) {
+    if (isPrime(i)) {
+      primes.push(i);
+    }
+  }
+  return primes;
+}

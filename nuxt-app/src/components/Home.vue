@@ -1,16 +1,19 @@
 <template>
   <div class="p-6 max-w-screen-xl mx-auto">
     <LocaleSwitcher />
-    <div v-if="catalog && catalog.length">
-      <div v-for="item in catalog" :key="item.id" class="product-card">
-        <ProductCard :product="item" />
-      </div>
-    </div>
+
     <div v-if="isLoading" class="text-center py-4">
       <p class="text-blue-500">Загрузка...</p>
     </div>
+
     <div v-else-if="isError" class="text-center py-4">
-      <p class="text-red-500">{{ isError }}</p>
+      <p class="text-red-500">Ошибка загрузки</p>
+    </div>
+
+    <div v-else>
+      <div v-for="item in catalog" :key="item.id" class="product-card">
+        <ProductCard :product="item" />
+      </div>
     </div>
   </div>
 </template>
@@ -22,6 +25,7 @@ import ProductCard from './Product.vue';
 import LocaleSwitcher from './LocaleSwitcher.vue';
 
 const catalogStore = useCatalogStore();
+
 const catalog = computed(() => catalogStore.catalog);
 const isLoading = computed(() => catalogStore.isLoading);
 const isError = computed(() => catalogStore.isError);
@@ -30,7 +34,3 @@ onMounted(() => {
   catalogStore.loadCatalog();
 });
 </script>
-
-<style scoped>
-
-</style>
